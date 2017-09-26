@@ -1,7 +1,7 @@
 package guru.springfamework.bootstrap;
 
 import guru.springfamework.domain.Category;
-import guru.springfamework.repositories.CategoryRespository;
+import guru.springfamework.repositories.CategoryRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class Bootstrap implements CommandLineRunner{
 
-    private CategoryRespository categoryRespository;
+    private CategoryRepository categoryRepository;
 
-    public Bootstrap(CategoryRespository categoryRespository) {
-        this.categoryRespository = categoryRespository;
+    public Bootstrap(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -34,14 +34,14 @@ public class Bootstrap implements CommandLineRunner{
         Category nuts = new Category();
         nuts.setName("Nuts");
 
-        categoryRespository.save(fruits);
-        categoryRespository.save(dried);
-        categoryRespository.save(fresh);
-        categoryRespository.save(exotic);
-        categoryRespository.save(nuts);
+        categoryRepository.save(fruits);
+        categoryRepository.save(dried);
+        categoryRepository.save(fresh);
+        categoryRepository.save(exotic);
+        categoryRepository.save(nuts);
 
 
-        System.out.println("Data Loaded = " + categoryRespository.count() );
+        System.out.println("Data Loaded = " + categoryRepository.count() );
 
     }
 }

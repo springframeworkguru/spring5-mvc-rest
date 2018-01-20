@@ -30,6 +30,9 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
+        # Install deps for Circle CI
+      - run: mvn install -Dskiptests
+
       - run: mvn dependency:go-offline
 
       - save_cache:

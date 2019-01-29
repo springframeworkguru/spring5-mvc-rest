@@ -1,25 +1,23 @@
 package guru.springfamework.services;
 
-/**
- * Created by jt on 10/6/17.
- */
-public class ResourceNotFoundException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+/*Template class for resource not found exception.
+* @ResponseCode annotation ensures consistency of status code anywhere this exception is thrown.*/
+@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException() {
     }
-
     public ResourceNotFoundException(String message) {
         super(message);
     }
-
     public ResourceNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
-
     public ResourceNotFoundException(Throwable cause) {
         super(cause);
     }
-
     public ResourceNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }

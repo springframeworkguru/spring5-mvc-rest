@@ -1,9 +1,20 @@
 package guru.springfamework.api.v1.model;
 
+import lombok.Data;
+
 /**
- * Created by jt on 9/24/17.
+ * Created by ccabo on 8/24/19.
  */
+@Data
 public class CategoryDTO {
     private Long id;
     private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }

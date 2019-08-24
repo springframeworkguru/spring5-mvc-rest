@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * Created by jt on 9/24/17.
+ * Created by ccabo on 8/24/19.
  */
 @Data
 @Entity
@@ -19,4 +19,11 @@ public class Category {
     private Long id;
     private String name;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String string) {
+        this.name = string;
+    }
 }

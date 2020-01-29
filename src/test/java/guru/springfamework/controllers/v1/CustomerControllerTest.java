@@ -1,10 +1,10 @@
 package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CustomerDTO;
-import guru.springfamework.api.v1.model.CustomerListDTO;
 import guru.springfamework.services.CustomerService;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -16,11 +16,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
+import static guru.springfamework.controllers.v1.AbstractRestControllerTest.asJsonString;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,7 +61,6 @@ public class CustomerControllerTest {
     public void getCustomerById() throws Exception {
         //arrange
         CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setId(1L);
         customerDTO.setFirstName("Zach");
         customerDTO.setLastName("Marbach");
         when(customerService.getCustomerById(anyLong())).thenReturn(customerDTO);
@@ -70,6 +69,24 @@ public class CustomerControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customers/1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", equalTo("Zach")))
+                .andExpect(jsonPath("$.lastName", equalTo("Marbach")));
+    }
+
+    @Test
+    public void postNewCustomer() throws Exception {
+        //arrange
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName("Kelli");
+        customerDTO.setLastName("Marbach");
+        customerDTO.setCustomer_url("/api/v1/customers/1");
+        when(customerService.createNewCustomer(ArgumentMatchers.any())).thenReturn(customerDTO);
+
+        //act and assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/customers/new")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(customerDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.firstName", equalTo("Kelli")))
                 .andExpect(jsonPath("$.lastName", equalTo("Marbach")));
     }
 }

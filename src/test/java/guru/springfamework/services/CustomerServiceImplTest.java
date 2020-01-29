@@ -6,15 +6,14 @@ import guru.springfamework.domain.Customer;
 import guru.springfamework.repositories.CustomerRepository;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -51,13 +50,33 @@ public class CustomerServiceImplTest {
     public void getCustomerById() {
         Customer customer = new Customer();
         customer.setId(ID);
+        customer.setFirstName("Zach");
         when(customerRepository.findById(anyLong())).thenReturn(java.util.Optional.of(customer));
 
         //act
         CustomerDTO customerDTO = customerService.getCustomerById(ID);
 
         //assert
-        assertEquals(ID, customerDTO.getId());
+        assertEquals("Zach", customerDTO.getFirstName());
+
+    }
+
+    @Test
+    public void postNewCustomer(){
+        //arrange
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName("Jimmy");
+
+        Customer savedCustomer = new Customer();
+        savedCustomer.setFirstName(customerDTO.getFirstName());
+
+        when(customerRepository.save(any())).thenReturn(savedCustomer);
+
+        //act
+        CustomerDTO savedCustomerDTO = customerService.createNewCustomer(new CustomerDTO());
+
+        //assert
+        assertEquals("Jimmy", savedCustomerDTO.getFirstName());
 
     }
 }

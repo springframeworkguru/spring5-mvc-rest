@@ -1,4 +1,4 @@
-package guru.springfamework.controllers;
+package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CategoryDTO;
 import guru.springfamework.controllers.v1.CategoryController;

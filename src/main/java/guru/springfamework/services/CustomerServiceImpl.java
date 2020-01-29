@@ -40,4 +40,20 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(customer -> customerMapper.customerToCustomerDTO(customer))
                 .orElseThrow(RuntimeException::new); //todo handle this error better
     }
+
+
+    @Override
+
+    //take in a DTO object as parameter cuz people interacting with our API will follow the DTO format (cuz thats what make visible to public)
+    public CustomerDTO createNewCustomer(CustomerDTO customerDTO) {
+        Customer customer = customerMapper.customerDTOToCustomer(customerDTO);
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        CustomerDTO savedDTO = customerMapper.customerToCustomerDTO(savedCustomer);
+
+        savedDTO.setCustomer_url("/api/v1/customers/" + savedCustomer.getId());
+
+        return savedDTO;
+    }
 }

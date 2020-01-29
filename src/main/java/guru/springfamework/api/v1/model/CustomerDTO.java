@@ -5,7 +5,8 @@ import lombok.Data;
 @Data
 public class CustomerDTO {
 
-    private Long id;
+    //no id property because dont want to expose to outside world. Id will be auto-generated when created (@Id and @Generated annotation)
+
     private String firstName;
     private String lastName;
 

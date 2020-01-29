@@ -30,8 +30,13 @@ public class CustomerController {
 
     @PostMapping("/new")
     //@RequestBody tells Spring to look at BODY of the POST REQUEST and map it to our CustomerDTO object
-    public ResponseEntity<CustomerDTO> postNewCustomer(@RequestBody CustomerDTO customerDTO){
+    public ResponseEntity<CustomerDTO> createNewCustomer(@RequestBody CustomerDTO customerDTO){
         return new ResponseEntity<CustomerDTO>(customerService.createNewCustomer(customerDTO), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CustomerDTO> updateCustomer(@RequestBody CustomerDTO customerDTO, @PathVariable Long id){
+        return new ResponseEntity<CustomerDTO>(customerService.saveCustomerById(id, customerDTO), HttpStatus.OK);
     }
 
 

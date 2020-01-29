@@ -37,23 +37,38 @@ public class CustomerServiceImpl implements CustomerService {
 
     public CustomerDTO getCustomerById(Long id) {
         return customerRepository.findById(id)
-                .map(customer -> customerMapper.customerToCustomerDTO(customer))
+                .map(customer -> {
+                    CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
+                    customerDTO.setCustomer_url("/api/v1/customers/" + customer.getId());
+                    return customerDTO;
+                })
                 .orElseThrow(RuntimeException::new); //todo handle this error better
     }
 
 
-    @Override
-
     //take in a DTO object as parameter cuz people interacting with our API will follow the DTO format (cuz thats what make visible to public)
     public CustomerDTO createNewCustomer(CustomerDTO customerDTO) {
+        return saveAndReturnDTO(customerMapper.customerDTOToCustomer(customerDTO));
+    }
+
+    public CustomerDTO saveCustomerById(Long id, CustomerDTO customerDTO){
+        //convert to customer, set the id and then save (Springs' save method will check if Id already exists and if so, just update it)
         Customer customer = customerMapper.customerDTOToCustomer(customerDTO);
+        customer.setId(id);
+        return saveAndReturnDTO(customer);
+    }
 
+
+    //helper method for CREATE and SAVE methods above
+    private CustomerDTO saveAndReturnDTO(Customer customer) {
         Customer savedCustomer = customerRepository.save(customer);
-
         CustomerDTO savedDTO = customerMapper.customerToCustomerDTO(savedCustomer);
-
         savedDTO.setCustomer_url("/api/v1/customers/" + savedCustomer.getId());
 
         return savedDTO;
     }
+
+
+
+
 }

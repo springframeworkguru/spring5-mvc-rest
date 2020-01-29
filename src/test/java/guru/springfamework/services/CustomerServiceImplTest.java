@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class CustomerServiceImplTest {
     @Mock
@@ -78,5 +78,16 @@ public class CustomerServiceImplTest {
         //assert
         assertEquals("Jimmy", savedCustomerDTO.getFirstName());
 
+    }
+
+    @Test
+    public void deleteCustomer(){
+        //arrange
+
+        //act
+        customerService.deleteCustomerById(1L);
+
+        //assert
+        verify(customerRepository, times(1)).deleteById(anyLong());
     }
 }

@@ -1,6 +1,7 @@
 package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CustomerDTO;
+import guru.springfamework.domain.Customer;
 import guru.springfamework.services.CustomerService;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,8 +21,7 @@ import static guru.springfamework.controllers.v1.AbstractRestControllerTest.asJs
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -88,5 +88,35 @@ public class CustomerControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName", equalTo("Kelli")))
                 .andExpect(jsonPath("$.lastName", equalTo("Marbach")));
+    }
+
+    @Test
+    public void testPatchCustomer() throws Exception {
+        //arrange
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName("Zach");
+        customerDTO.setLastName("Marbach");
+        customerDTO.setCustomer_url("/api/v1/customers/1");
+
+        when(customerService.patchCustomer(anyLong(), ArgumentMatchers.any())).thenReturn(customerDTO);
+
+        //act and assert
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customerDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName", equalTo("Zach")))
+                .andExpect(jsonPath("$.lastName", equalTo("Marbach")));
+    }
+
+    @Test
+    public void testDeleteCustomerById() throws Exception {
+        //arrange
+
+        //act and assert
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/customers/1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(customerService, times(1)).deleteCustomerById(anyLong());
     }
 }

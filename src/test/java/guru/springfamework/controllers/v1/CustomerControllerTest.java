@@ -3,6 +3,7 @@ package guru.springfamework.controllers.v1;
 import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.domain.Customer;
 import guru.springfamework.services.CustomerService;
+import guru.springfamework.services.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
@@ -37,7 +38,10 @@ public class CustomerControllerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(customerController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(customerController)
+                //have to set this so all controller will know about ControllerAdvice
+                .setControllerAdvice(RestResponseEntityExceptionHandler.class)
+                .build();
     }
 
     @Test
@@ -52,7 +56,7 @@ public class CustomerControllerTest {
         when(customerService.getAllCustomers()).thenReturn(customerDTOS);
 
         //act and assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customers/").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.get(CustomerController.getBaseUrl()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customerDTOS", hasSize(2)));
     }
@@ -66,7 +70,7 @@ public class CustomerControllerTest {
         when(customerService.getCustomerById(anyLong())).thenReturn(customerDTO);
 
         //act and assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customers/1").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.get(CustomerController.getBaseUrl() + "/1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", equalTo("Zach")))
                 .andExpect(jsonPath("$.lastName", equalTo("Marbach")));
@@ -78,11 +82,11 @@ public class CustomerControllerTest {
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setFirstName("Kelli");
         customerDTO.setLastName("Marbach");
-        customerDTO.setCustomer_url("/api/v1/customers/1");
+        customerDTO.setCustomer_url(CustomerController.getBaseUrl() + "/1");
         when(customerService.createNewCustomer(ArgumentMatchers.any())).thenReturn(customerDTO);
 
         //act and assert
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/customers/new")
+        mockMvc.perform(MockMvcRequestBuilders.post(CustomerController.getBaseUrl() + "/new")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(asJsonString(customerDTO)))
                 .andExpect(status().isCreated())
@@ -96,12 +100,12 @@ public class CustomerControllerTest {
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setFirstName("Zach");
         customerDTO.setLastName("Marbach");
-        customerDTO.setCustomer_url("/api/v1/customers/1");
+        customerDTO.setCustomer_url(CustomerController.getBaseUrl() + "/1");
 
         when(customerService.patchCustomer(anyLong(), ArgumentMatchers.any())).thenReturn(customerDTO);
 
         //act and assert
-        mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/customers/1")
+        mockMvc.perform(MockMvcRequestBuilders.patch(CustomerController.getBaseUrl() + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customerDTO)))
                 .andExpect(status().isOk())
@@ -114,9 +118,20 @@ public class CustomerControllerTest {
         //arrange
 
         //act and assert
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/customers/1").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.delete(CustomerController.getBaseUrl() + "/1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         verify(customerService, times(1)).deleteCustomerById(anyLong());
+    }
+
+    @Test
+    public void testBadUrlReturnsNotFoundException() throws Exception {
+        //remember to setControllerAdvice in setup
+
+        when(customerService.getCustomerById(anyLong())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(CustomerController.getBaseUrl() + "/999")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

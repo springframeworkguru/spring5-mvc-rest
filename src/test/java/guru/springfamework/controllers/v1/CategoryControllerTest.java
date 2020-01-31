@@ -3,6 +3,7 @@ package guru.springfamework.controllers.v1;
 import guru.springfamework.api.v1.model.CategoryDTO;
 import guru.springfamework.controllers.v1.CategoryController;
 import guru.springfamework.services.CategoryService;
+import guru.springfamework.services.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +20,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -40,7 +42,10 @@ public class CategoryControllerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(categoryController)
+                //have to set this so all controller will know about ControllerAdvice
+                .setControllerAdvice(RestResponseEntityExceptionHandler.class)
+                .build();
     }
 
     @Test
@@ -51,7 +56,7 @@ public class CategoryControllerTest {
         when(categoryService.getAllCategories()). thenReturn(categoryDTOList);
 
         //act and assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/categories/").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.get(CategoryController.getBaseUrl()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 //using jsonPath to examine the JSON object.
                 //$ indicates the root... so saying does categories have a size of 2?
@@ -68,10 +73,21 @@ public class CategoryControllerTest {
         when(categoryService.getCategoryByName(anyString())).thenReturn(categoryDTO);
 
         //act and assert
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/categories/" + NAME).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.get(CategoryController.getBaseUrl() + "/" + NAME).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 //using jsonPath to examine the JSON object.
                 //$ indicates the root... so saying is "name" property on JSON object equal to NAME constant?
                 .andExpect(jsonPath("$.name", equalTo(NAME)));
+    }
+
+    @Test
+    public void testBadUrlReturnsNotFoundException() throws Exception {
+        //remember to setControllerAdvice in setup
+
+        when(categoryService.getCategoryByName(anyString())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(CategoryController.getBaseUrl() + "/foo")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

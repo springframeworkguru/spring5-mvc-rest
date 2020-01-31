@@ -34,7 +34,10 @@ public class CategoryServiceImpl implements CategoryService {
     //returning CategoryDTOs in the HTTP response, so have to use Mapper (from MapStruct)
     @Override
     public CategoryDTO getCategoryByName(String name) {
-        Category category = categoryRepository.findByName(name);
-        return categoryMapper.categoryToCategoryDTO(category);
+        if(categoryRepository.findByName(name) != null){
+            Category category = categoryRepository.findByName(name);
+            return categoryMapper.categoryToCategoryDTO(category);
+        }
+        else throw new ResourceNotFoundException("Resource Not Found");
     }
 }

@@ -1,9 +1,8 @@
 package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CategoryDTO;
-import guru.springfamework.controllers.v1.CategoryController;
 import guru.springfamework.services.CategoryService;
-import guru.springfamework.services.ResourceNotFoundException;
+import guru.springfamework.customExceptions.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -19,8 +18,6 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

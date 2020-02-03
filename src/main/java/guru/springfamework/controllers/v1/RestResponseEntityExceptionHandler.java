@@ -1,6 +1,7 @@
 package guru.springfamework.controllers.v1;
 
-import guru.springfamework.services.ResourceNotFoundException;
+import guru.springfamework.customExceptions.ResourceAlreadyExistsException;
+import guru.springfamework.customExceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -22,5 +23,14 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         }
 
         return "Resource Not Found";
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Object handleAlreadyExistsException(Exception e){
+        if(e.getMessage() != null){
+            return e.getMessage();
+        }
+        return "Resource already exists";
     }
 }

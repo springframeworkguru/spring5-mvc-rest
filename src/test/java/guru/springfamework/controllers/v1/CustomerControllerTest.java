@@ -1,9 +1,9 @@
 package guru.springfamework.controllers.v1;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.springfamework.api.v1.model.CustomerDTO;
-import guru.springfamework.domain.Customer;
 import guru.springfamework.services.CustomerService;
-import guru.springfamework.services.ResourceNotFoundException;
+import guru.springfamework.customExceptions.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
@@ -84,6 +84,7 @@ public class CustomerControllerTest {
         customerDTO.setLastName("Marbach");
         customerDTO.setCustomer_url(CustomerController.getBaseUrl() + "/1");
         when(customerService.createNewCustomer(ArgumentMatchers.any())).thenReturn(customerDTO);
+
 
         //act and assert
         mockMvc.perform(MockMvcRequestBuilders.post(CustomerController.getBaseUrl() + "/new")

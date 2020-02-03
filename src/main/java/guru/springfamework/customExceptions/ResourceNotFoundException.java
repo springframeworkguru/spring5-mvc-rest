@@ -1,4 +1,4 @@
-package guru.springfamework.services;
+package guru.springfamework.customExceptions;
 
 import org.springframework.stereotype.Component;
 

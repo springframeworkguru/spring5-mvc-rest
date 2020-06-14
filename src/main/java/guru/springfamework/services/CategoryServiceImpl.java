@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 /**
  * Created by jt on 9/26/17.
  */
+@Service
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryMapper categoryMapper;

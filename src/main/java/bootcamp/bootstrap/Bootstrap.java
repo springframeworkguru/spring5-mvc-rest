@@ -1,7 +1,7 @@
-package guru.springfamework.bootstrap;
+package bootcamp.bootstrap;
 
-import guru.springfamework.domain.Artist;
-import guru.springfamework.repositories.ArtistRepository;
+import bootcamp.domain.Artist;
+import bootcamp.repositories.ArtistRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 

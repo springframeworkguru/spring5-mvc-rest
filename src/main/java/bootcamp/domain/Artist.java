@@ -1,4 +1,4 @@
-package guru.springfamework.domain;
+package bootcamp.domain;
 
 import lombok.Data;
 

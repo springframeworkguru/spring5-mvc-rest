@@ -1,8 +1,7 @@
-package guru.springfamework.services;
+package bootcamp.services;
 
-import guru.springfamework.api.v1.model.ArtistDTO;
-import guru.springfamework.domain.Artist;
-import jdk.jfr.Category;
+import bootcamp.api.v1.model.ArtistDTO;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;

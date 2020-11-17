@@ -1,13 +1,14 @@
-package guru.springfamework.services;
+package bootcamp.services;
 
-import guru.springfamework.api.v1.model.ArtistDTO;
-import guru.springfamework.domain.Artist;
-import guru.springfamework.mapper.ArtistMapper;
-import guru.springfamework.repositories.ArtistRepository;
+import bootcamp.api.v1.model.ArtistDTO;
+import bootcamp.mapper.ArtistMapper;
+import bootcamp.repositories.ArtistRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class ArtistServiceImpl implements ArtistService {
     public ArtistServiceImpl(ArtistMapper artistMapper, ArtistRepository artistRepository) {
         this.artistMapper = artistMapper;

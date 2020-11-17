@@ -1,7 +1,7 @@
-package guru.springfamework.mapper;
+package bootcamp.mapper;
 
-import guru.springfamework.api.v1.model.ArtistDTO;
-import guru.springfamework.domain.Artist;
+import bootcamp.api.v1.model.ArtistDTO;
+import bootcamp.domain.Artist;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

@@ -1,4 +1,4 @@
-package guru.springfamework.api.v1.model;
+package bootcamp.api.v1.model;
 
 import lombok.Data;
 

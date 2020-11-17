@@ -12,7 +12,7 @@ import javax.persistence.Id;
  */
 @Data
 @Entity
-public class Category {
+public class Artist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

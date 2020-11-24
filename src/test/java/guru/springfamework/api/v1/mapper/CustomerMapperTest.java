@@ -34,6 +34,5 @@ public class CustomerMapperTest {
         assertEquals(LASTNAME,customerDTO1.getLastname());
 
 
-
     }
 }

@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Darcy Xian  22/11/20  6:41 pm      spring5-mvc-rest
@@ -100,6 +100,16 @@ public class CustomerServiceTest {
         //then
         assertEquals(customerDTO.getFirstname(), savedDto.getFirstname());
         assertEquals("/api/v1/customer/1", savedDto.getCustomerUrl());
+    }
+
+    @Test
+    public void testDeleteCustomerById() throws Exception{
+        Long id = 1L;
+
+        customerRepository.deleteById(id);
+
+        verify(customerRepository, times(1)).deleteById(anyLong());
+
     }
 }
 

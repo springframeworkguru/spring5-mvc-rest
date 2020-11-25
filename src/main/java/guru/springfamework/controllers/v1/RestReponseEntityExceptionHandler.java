@@ -1,4 +1,4 @@
-package guru.springfamework.api.controllers.v1;
+package guru.springfamework.controllers.v1;
 
 import guru.springfamework.services.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;

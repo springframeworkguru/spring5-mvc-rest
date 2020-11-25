@@ -1,4 +1,4 @@
-package guru.springfamework.api.controllers.v1;
+package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.services.CustomerService;
@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static guru.springfamework.api.controllers.v1.AbstractRestControllerTest.asJsonString;
+import static guru.springfamework.controllers.v1.AbstractRestControllerTest.asJsonString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
@@ -64,7 +64,6 @@ public class CustomerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customerListDTOS", hasSize(3)));
-
     }
 
     @Test

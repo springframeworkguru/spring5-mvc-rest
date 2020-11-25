@@ -15,6 +15,7 @@ public class VendorDTO {
 
         private Long id;
         private String name;
+        private String nickName;
         private String vendorUrl;
 
 }

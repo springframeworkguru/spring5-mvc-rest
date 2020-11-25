@@ -1,6 +1,6 @@
 package guru.springfamework.services;
 
-import guru.springfamework.api.controllers.v1.CustomerController;
+import guru.springfamework.controllers.v1.CustomerController;
 import guru.springfamework.api.v1.mapper.CustomerMapper;
 import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.domain.Customer;
@@ -69,6 +69,7 @@ public class CustomerServiceImp implements CustomerService{
         CustomerDTO customerDTO1 = customerMapper.CustomerToCustomerDTO(
                 customerRepository.save(
                         customerMapper.CustomerDTOToCustomer(customerDTO)));
+
         customerDTO1.setCustomerUrl(getCustomerUrl( id));
         return customerDTO1;
     }
@@ -88,7 +89,7 @@ public class CustomerServiceImp implements CustomerService{
                  CustomerDTO customerDTO1 = customerMapper.CustomerToCustomerDTO(customerRepository.save(customer));
                  customerDTO1.setCustomerUrl(getCustomerUrl(id));
                   return  customerDTO1;
-        }).orElseThrow(RuntimeException::new);
+        }).orElseThrow(ResourceNotFoundException::new);
 
         }
         @Override

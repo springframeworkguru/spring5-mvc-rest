@@ -7,6 +7,7 @@ import guru.springfamework.domain.Customer;
 import guru.springfamework.repositories.CategoryRepository;
 import guru.springfamework.repositories.CustomerRepository;
 
+import guru.springfamework.repositories.VendorRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,8 @@ public class CustomerServiceImpIT {
     CustomerRepository customerRepository;
     @Autowired
     CategoryRepository categoryRepository;
+    @Autowired
+    VendorRepository vendorRepository;
 
     CustomerService customerService;
 
@@ -42,7 +45,7 @@ public class CustomerServiceImpIT {
         System.out.println(customerRepository.findAll().size());
 
         //setup data for testing
-        Bootstrap bootstrap = new Bootstrap(categoryRepository,customerRepository);
+        Bootstrap bootstrap = new Bootstrap(categoryRepository,customerRepository,vendorRepository);
         bootstrap.run(); // loade data
 
         customerService = new CustomerServiceImp(customerRepository, CustomerMapper.INSTANCE);

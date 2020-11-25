@@ -2,8 +2,10 @@ package guru.springfamework.bootstrap;
 
 import guru.springfamework.domain.Category;
 import guru.springfamework.domain.Customer;
+import guru.springfamework.domain.Vendor;
 import guru.springfamework.repositories.CategoryRepository;
 import guru.springfamework.repositories.CustomerRepository;
+import guru.springfamework.repositories.VendorRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -16,12 +18,14 @@ import org.springframework.stereotype.Component;
 public class Bootstrap implements CommandLineRunner {
     private CategoryRepository categoryRepository;
     private CustomerRepository customerRepository;
+    private VendorRepository vendorRepository;
 
 
     @Override
     public void run(String... args) throws Exception {
         loadCategories();
         loadCustomers();
+        loadVendors();
 
     }
 
@@ -64,5 +68,21 @@ public class Bootstrap implements CommandLineRunner {
         customerRepository.save(customer1);
         customerRepository.save(customer);
         System.out.println("Customers Loaded = " + customerRepository.count());
+   }
+
+   private void loadVendors(){
+       Vendor vendor = new Vendor();
+       vendor.setName("Nike");
+       vendor.setNickName("ccccc");
+
+       Vendor vendor1 = new Vendor();
+       vendor1.setName("Addidass");
+       vendor1.setNickName("kkkkkk");
+
+       vendorRepository.save(vendor);
+       vendorRepository.save(vendor1);
+       System.out.println("Vendors Loaded = " + vendorRepository.count());
+
+
    }
 }

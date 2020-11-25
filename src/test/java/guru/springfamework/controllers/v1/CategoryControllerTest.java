@@ -1,10 +1,9 @@
-package guru.springfamework.api.controllers.v1;
+package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.CategoryDTO;
 import guru.springfamework.services.CategoryService;
 import guru.springfamework.services.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;

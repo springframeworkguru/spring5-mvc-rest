@@ -64,6 +64,7 @@ public class CategoryControllerTest {
 
         // when
         mockMvc.perform(get("/api/v1/categories/")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 // categoryListDTOS 是 CategoryListDTO 里的 property
@@ -82,6 +83,7 @@ public class CategoryControllerTest {
         when(categoryService.getCategoryByName(anyString())).thenReturn(categoryDTO);
 
         mockMvc.perform(get("/api/v1/categories/Joe")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name",equalTo(NAME)));
@@ -91,6 +93,7 @@ public class CategoryControllerTest {
         when(categoryService.getCategoryByName(anyString())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc.perform(get(CategoryController.BASE_URL + "/Foo")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
 

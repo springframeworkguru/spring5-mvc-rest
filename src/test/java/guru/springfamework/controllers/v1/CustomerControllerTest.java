@@ -61,6 +61,7 @@ public class CustomerControllerTest {
 
         // then
         mockMvc.perform(get("/api/v1/customers/")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customerListDTOS", hasSize(3)));
@@ -78,6 +79,7 @@ public class CustomerControllerTest {
         when(customerService.findCustomerById(1L)).thenReturn(customerDTO);
 
         mockMvc.perform(get("/api/v1/customers/1")
+                .accept(MediaType.APPLICATION_JSON)
                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstname", equalTo(FIRSTNAME)));
@@ -122,6 +124,7 @@ public class CustomerControllerTest {
 
         // when then
         mockMvc.perform(put("/api/v1/customers/1")
+                .accept(MediaType.APPLICATION_JSON)
                          .contentType(MediaType.APPLICATION_JSON)
                          .content(asJsonString(customerDTO)))
                          .andExpect(status().isOk())
@@ -142,6 +145,7 @@ public class CustomerControllerTest {
 
         // when then
         mockMvc.perform(patch(CustomerController.BASE_URL + "/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customerDTO)))
                 .andExpect(status().isOk())
@@ -153,6 +157,7 @@ public class CustomerControllerTest {
     @Test
     public void testDeleteCUstomer() throws Exception{
         mockMvc.perform(delete("/api/v1/customers/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 

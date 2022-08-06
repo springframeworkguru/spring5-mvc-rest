@@ -36,4 +36,11 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO getCustomerByLastName(String lastName) {
         return customerMapper.customerToCustomerDTO(customerRepository.findByLastName(lastName));
     }
+
+    @Override
+    public CustomerDTO getCustomerById(Long id) {
+        return customerRepository.findById(id)
+                .map(customerMapper::customerToCustomerDTO)
+                .orElseThrow(RuntimeException::new);
+    }
 }

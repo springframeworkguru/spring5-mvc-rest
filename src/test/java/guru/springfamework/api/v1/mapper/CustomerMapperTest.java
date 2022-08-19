@@ -13,7 +13,6 @@ public class CustomerMapperTest {
 
     public static final String FIRSTNAME = "BILL";
     public static final String LASTNAME = "JOEL";
-    public static final Long ID = 1l;
 
     CustomerMapper customerMapper = CustomerMapper.INSTANCE;
 
@@ -23,13 +22,11 @@ public class CustomerMapperTest {
     public void customerToCustomerDTO() {
 
         Customer customer = new Customer();
-        customer.setId(ID);
         customer.setFirstName(FIRSTNAME);
         customer.setLastName(LASTNAME);
 
         customerDTO = customerMapper.customerToCustomerDTO(customer);
 
-        assertEquals(ID, customerDTO.getId());
         assertEquals(FIRSTNAME, customerDTO.getFirstName());
         assertEquals(LASTNAME, customerDTO.getLastName());
     }

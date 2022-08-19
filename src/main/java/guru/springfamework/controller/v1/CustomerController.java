@@ -26,12 +26,12 @@ public class CustomerController {
                 new CustomerListDTO(customerService.getAllCustomers()), HttpStatus.OK);
     }
 
-    @GetMapping("firstName/{firstName}")
+    @GetMapping("firstname/{firstName}")
     public ResponseEntity<CustomerDTO> getCustomerByFirstName(@PathVariable String firstName){
         return new ResponseEntity<CustomerDTO>(customerService.getCustomerByFirstName(firstName), HttpStatus.OK);
     }
 
-   @GetMapping("lastName/{lastName}")
+   @GetMapping("lastname/{lastName}")
    public ResponseEntity<CustomerDTO> getCustomerByLastName(@PathVariable String lastName){
         return new ResponseEntity<CustomerDTO>(customerService.getCustomerByLastName(lastName), HttpStatus.OK);
    }

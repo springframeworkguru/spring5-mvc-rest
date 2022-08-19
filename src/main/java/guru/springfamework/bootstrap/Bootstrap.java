@@ -22,7 +22,6 @@ public class Bootstrap implements CommandLineRunner {
     public void run(String... args) throws Exception {
         loadCategories();
 
-
         loadCustomers();
     }
 

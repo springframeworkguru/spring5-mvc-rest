@@ -24,8 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CustomerControllerTest {
 
     public static final String FIRST_NAME = "Paidi";
-    public static final Long ID = 1L;
     public static final String LAST_NAME = "OSe";
+    public static final Long ID = 1L;
 
     MockMvc mockMvc;
     @Mock
@@ -57,7 +57,6 @@ public class CustomerControllerTest {
     @Test
     public void getCustomerByFirstName() throws Exception {
         CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setId(ID);
         customerDTO.setFirstName(FIRST_NAME);
         customerDTO.setLastName(LAST_NAME);
 
@@ -74,7 +73,6 @@ public class CustomerControllerTest {
     @Test
     public void getCustomerByLastName() throws Exception {
         CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setId(ID);
         customerDTO.setFirstName(FIRST_NAME);
         customerDTO.setLastName(LAST_NAME);
 
@@ -90,7 +88,6 @@ public class CustomerControllerTest {
     @Test
     public void getCustomerById() throws Exception {
         CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setId(ID);
         customerDTO.setFirstName(FIRST_NAME);
         customerDTO.setLastName(LAST_NAME);
 
@@ -99,7 +96,6 @@ public class CustomerControllerTest {
         //then
         mockMvc.perform(get("/api/v1/customers/1")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", equalTo(ID)));
+                .andExpect(status().isOk());
     }
 }

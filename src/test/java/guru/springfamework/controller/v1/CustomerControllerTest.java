@@ -63,7 +63,7 @@ public class CustomerControllerTest {
         when(customerService.getCustomerByFirstName(FIRST_NAME)).thenReturn(customerDTO);
 
         //then
-        mockMvc.perform(get("/api/v1/customers/firstName/Paidi")
+        mockMvc.perform(get("/api/v1/customers/firstname/Paidi")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", equalTo(FIRST_NAME)));
@@ -79,7 +79,7 @@ public class CustomerControllerTest {
         when(customerService.getCustomerByLastName(LAST_NAME)).thenReturn(customerDTO);
 
         //then
-        mockMvc.perform(get("/api/v1/customers/lastName/OSe")
+        mockMvc.perform(get("/api/v1/customers/lastname/OSe")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lastName", equalTo(LAST_NAME)));

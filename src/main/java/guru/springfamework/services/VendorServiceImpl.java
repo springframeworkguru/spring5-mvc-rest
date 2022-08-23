@@ -2,6 +2,7 @@ package guru.springfamework.services;
 
 import guru.springfamework.api.v1.mapper.VendorMapper;
 import guru.springfamework.api.v1.model.VendorDTO;
+import guru.springfamework.domain.Vendor;
 import guru.springfamework.repositories.VendorRepository;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,7 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public VendorDTO getVendorById(Long id) {
-        return vendorMapper.vendorToVendorDTO(vendorRepository.findById(id).orElseThrow(RuntimeException::new));
+    public Vendor getVendorById(Long id) {
+        return vendorRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 }

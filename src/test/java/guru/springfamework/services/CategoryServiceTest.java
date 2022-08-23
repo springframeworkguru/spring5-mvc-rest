@@ -38,7 +38,6 @@ public class CategoryServiceTest {
         MockitoAnnotations.initMocks(this);
         categoryService = new CategoryServiceImpl(CategoryMapper.INSTANCE, categoryRepository);
 
-        //mockMvc = MockMvcBuilders.standaloneSetup(categoryService).build();
     }
 
     @Test

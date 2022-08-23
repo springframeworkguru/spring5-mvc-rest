@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
@@ -28,15 +29,15 @@ public class VendorServiceTest {
     @Mock
     VendorRepository vendorRepository;
 
-    @InjectMocks
-    VendorServiceImpl vendorService;
+    /*@InjectMocks
+    VendorServiceImpl vendorService;*/
 
-    //VendorService vendorService;
+    VendorService vendorService;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        //vendorService = new VendorServiceImpl(VendorMapper.INSTANCE, vendorRepository);
+        vendorService = new VendorServiceImpl(VendorMapper.INSTANCE, vendorRepository);
     }
 
     @Test
@@ -55,6 +56,36 @@ public class VendorServiceTest {
 
     @Test
     public void findByName() {
+
+        //given
+        Vendor tasty = new Vendor();
+        tasty.setName("tasty");
+
+        when(vendorRepository.findByName("tasty")).thenReturn(tasty);
+
+        //when
+        VendorDTO vendorDTO = vendorService.findByName("tasty");
+
+        //then
+        assertEquals("tasty", vendorDTO.getName());
+
+    }
+
+    @Test
+    public void getVendorById(){
+
+        //given
+        Vendor tasty = new Vendor();
+        tasty.setId(1L);
+
+        when(vendorRepository.findById(1L)).thenReturn(Optional.of(tasty));
+
+        //when
+        Vendor vendor = vendorService.getVendorById(1L);
+
+        //then
+        assertEquals(Optional.of(1L), Optional.of(vendor.getId()));
+
     }
 
 

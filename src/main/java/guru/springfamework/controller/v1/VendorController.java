@@ -1,8 +1,8 @@
 package guru.springfamework.controller.v1;
 
-import guru.springfamework.api.v1.model.CustomerListDTO;
 import guru.springfamework.api.v1.model.VendorDTO;
 import guru.springfamework.api.v1.model.VendorListDTO;
+import guru.springfamework.domain.Vendor;
 import guru.springfamework.services.VendorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,5 +30,10 @@ public class VendorController {
     @GetMapping("name/{name}")
     public ResponseEntity<VendorDTO> findByName(@PathVariable String name){
         return new ResponseEntity<>(vendorService.findByName(name), HttpStatus.OK);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Vendor> findById(@PathVariable Long id){
+        return new ResponseEntity<>(vendorService.getVendorById(id),HttpStatus.OK);
     }
 }

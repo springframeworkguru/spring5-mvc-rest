@@ -6,9 +6,11 @@ import guru.springfamework.domain.Vendor;
 import guru.springfamework.repositories.VendorRepository;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -16,11 +18,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class VendorServiceTest {
 
-    public static final String NAME = "Tasty";
+    public static final String NAME = "tasty";
     public static final Long ID = 1L;
 
     @Mock
@@ -29,23 +33,22 @@ public class VendorServiceTest {
     @Mock
     VendorRepository vendorRepository;
 
-    /*@InjectMocks
-    VendorServiceImpl vendorService;*/
-
-    VendorService vendorService;
+    @InjectMocks
+    VendorServiceImpl vendorService;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        vendorService = new VendorServiceImpl(VendorMapper.INSTANCE, vendorRepository);
     }
 
     @Test
     public void getAllVendors() {
         //given
         List<Vendor> vendors = Arrays.asList(new Vendor(), new Vendor(), new Vendor());
+        VendorDTO mockVendorDTO = mock(VendorDTO.class);
 
         when(vendorRepository.findAll()).thenReturn(vendors);
+        when(vendorMapper.vendorToVendorDTO(any(Vendor.class))).thenReturn(mockVendorDTO);
 
         //when
         List<VendorDTO> vendorDTOList = vendorService.getAllVendors();
@@ -58,16 +61,20 @@ public class VendorServiceTest {
     public void findByName() {
 
         //given
-        Vendor tasty = new Vendor();
-        tasty.setName("tasty");
+        VendorDTO tasty = new VendorDTO();
+        tasty.setName(NAME);
 
-        when(vendorRepository.findByName("tasty")).thenReturn(tasty);
+        VendorDTO mockVendorDTO = mock(VendorDTO.class);
+
+        when(vendorRepository.findByName(NAME)).thenReturn(tasty);
+        when(vendorMapper.vendorToVendorDTO(any(Vendor.class))).thenReturn(mockVendorDTO);
 
         //when
-        VendorDTO vendorDTO = vendorService.findByName("tasty");
+        VendorDTO vendorDTO = vendorService.findByName(NAME);
+
 
         //then
-        assertEquals("tasty", vendorDTO.getName());
+        assertEquals(NAME, vendorDTO.getName());
 
     }
 
@@ -78,13 +85,13 @@ public class VendorServiceTest {
         Vendor tasty = new Vendor();
         tasty.setId(1L);
 
-        when(vendorRepository.findById(1L)).thenReturn(Optional.of(tasty));
+        when(vendorRepository.findById(ID)).thenReturn(Optional.of(tasty));
 
         //when
-        Vendor vendor = vendorService.getVendorById(1L);
+        Vendor vendor = vendorService.getVendorById(ID);
 
         //then
-        assertEquals(Optional.of(1L), Optional.of(vendor.getId()));
+        assertEquals(Optional.of(ID), Optional.of(vendor.getId()));
 
     }
 

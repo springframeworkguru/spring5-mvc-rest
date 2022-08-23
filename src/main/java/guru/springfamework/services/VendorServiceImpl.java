@@ -35,7 +35,8 @@ public class VendorServiceImpl implements VendorService {
 
     @Override
     public VendorDTO findByName(String name) {
-        return vendorMapper.vendorToVendorDTO(vendorRepository.findByName(name));
+        //return vendorMapper.vendorToVendorDTO(vendorRepository.findByName(name));
+        return vendorRepository.findByName(name);
     }
 
     @Override

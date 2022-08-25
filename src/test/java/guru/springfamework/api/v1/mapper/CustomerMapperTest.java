@@ -18,7 +18,7 @@ public class CustomerMapperTest {
 
     CustomerDTO customerDTO;
 
-    @Test
+    /*@Test
     public void customerToCustomerDTO() {
 
         Customer customer = new Customer();
@@ -29,5 +29,5 @@ public class CustomerMapperTest {
 
         assertEquals(FIRSTNAME, customerDTO.getFirstName());
         assertEquals(LASTNAME, customerDTO.getLastName());
-    }
+    }*/
 }

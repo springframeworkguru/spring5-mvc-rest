@@ -1,17 +1,16 @@
 package guru.springfamework.services;
 
 import guru.springfamework.api.v1.mapper.VendorMapper;
+import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.api.v1.model.VendorDTO;
+import guru.springfamework.domain.Customer;
 import guru.springfamework.domain.Vendor;
 import guru.springfamework.repositories.VendorRepository;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class VendorServiceTest {
+public class VendorServiceImplTest {
 
     public static final String NAME = "tasty";
     public static final Long ID = 1L;
@@ -39,6 +38,7 @@ public class VendorServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        VendorMapper vendorMapper1 = VendorMapper.INSTANCE;
     }
 
     @Test
@@ -93,6 +93,24 @@ public class VendorServiceTest {
         //then
         assertEquals(Optional.of(ID), Optional.of(vendor.getId()));
 
+    }
+
+    @Test
+    public void createNewVendor() {
+        //given
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName("tasty");
+
+        Vendor savedVendor = new Vendor();
+        savedVendor.setName("tasty");
+
+        when(vendorRepository.save(any(Vendor.class))).thenReturn(savedVendor);
+
+        //when
+        VendorDTO savedDto = vendorService.createNewVendor(vendorDTO);
+
+        //then
+        assertEquals(vendorDTO.getName(),savedVendor.getName());
     }
 
 

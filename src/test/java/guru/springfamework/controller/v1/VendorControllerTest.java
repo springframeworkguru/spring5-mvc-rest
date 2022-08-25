@@ -16,10 +16,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.Arrays;
 import java.util.List;
 
+import static guru.springfamework.controller.v1.AbstractRestControllerTest.asJsonString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,9 +59,7 @@ public class VendorControllerTest {
     @Test
     public void findByName() throws Exception {
         //given
-        VendorDTO vendorDTO = new VendorDTO();
-        vendorDTO.setName("tasty");
-        vendorDTO.setVendorUrl("/api/v1/vendors");
+        VendorDTO vendorDTO = getVendorDTO();
 
         when(vendorService.findByName("tasty")).thenReturn(vendorDTO);
 
@@ -68,5 +68,51 @@ public class VendorControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(vendorDTO.getName())));
+    }
+
+
+
+    @Test
+    public void createNewVendor() throws Exception {
+        //given
+        VendorDTO vendorDTO = getVendorDTO();
+
+        VendorDTO returnVendorDTO = vendorDTO;
+
+        when(vendorService.createNewVendor(vendorDTO)).thenReturn(returnVendorDTO);
+
+        mockMvc.perform(post("/api/v1/vendors/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendorDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name", equalTo("tasty")));
+    }
+
+    /*
+    * @Test
+    public void createNewCustomer() throws Exception {
+        //given
+        CustomerDTO customerDTO = getDto(FIRST_NAME, LAST_NAME);
+
+        CustomerDTO returnDTO = getDto(customerDTO.getFirstname(), customerDTO.getLastname());
+        returnDTO.setCustomerUrl("/api/v1/customer/1");
+
+        when(customerService.createNewCustomer(customerDTO)).thenReturn(returnDTO);
+
+        mockMvc.perform(post("/api/v1/customers/")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(customerDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.firstname", equalTo(FIRST_NAME)))
+                .andExpect(jsonPath("$.lastname", equalTo(LAST_NAME)))
+                .andExpect(jsonPath("$.customerUrl", equalTo("/api/v1/customer/1")));
+    }
+    * */
+
+    private static VendorDTO getVendorDTO() {
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName("tasty");
+        vendorDTO.setVendorUrl("/api/v1/vendors");
+        return vendorDTO;
     }
 }

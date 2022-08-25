@@ -7,12 +7,10 @@ import guru.springfamework.services.VendorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/api/v1/vendors/")
+@RequestMapping("/api/v1/vendors")
 public class VendorController {
 
     private final VendorService vendorService;
@@ -27,13 +25,18 @@ public class VendorController {
                 new VendorListDTO(vendorService.getAllVendors()), HttpStatus.OK);
     }
 
-    @GetMapping("name/{name}")
+    @GetMapping("/name/{name}")
     public ResponseEntity<VendorDTO> findByName(@PathVariable String name){
         return new ResponseEntity<>(vendorService.findByName(name), HttpStatus.OK);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Vendor> findById(@PathVariable Long id){
         return new ResponseEntity<>(vendorService.getVendorById(id),HttpStatus.OK);
+    }
+
+    @PostMapping()
+    public ResponseEntity<VendorDTO> createNewVendor(@RequestBody VendorDTO vendorDTO ){
+        return new ResponseEntity<>(vendorService.createNewVendor(vendorDTO), HttpStatus.CREATED);
     }
 }

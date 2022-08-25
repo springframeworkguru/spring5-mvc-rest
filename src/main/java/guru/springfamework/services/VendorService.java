@@ -12,4 +12,6 @@ public interface VendorService {
     VendorDTO findByName(String name);
 
     Vendor getVendorById(Long id);
+
+    VendorDTO createNewVendor(VendorDTO vendorDTO);
 }

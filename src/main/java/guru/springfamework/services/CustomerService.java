@@ -8,7 +8,8 @@ public interface CustomerService {
 
     List<CustomerDTO> getAllCustomers();
     //TODO what if there are a number of people with the same name - needs to be a list returned
-    CustomerDTO getCustomerByFirstName(String firstName);
-    CustomerDTO getCustomerByLastName(String lastName);
+    CustomerDTO getCustomerByFirstName(String firstname);
+    CustomerDTO getCustomerByLastName(String lastname);
     CustomerDTO getCustomerById(Long id);
+    CustomerDTO createNewCustomer(CustomerDTO customerDTO);
 }

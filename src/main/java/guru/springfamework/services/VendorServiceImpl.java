@@ -43,4 +43,17 @@ public class VendorServiceImpl implements VendorService {
     public Vendor getVendorById(Long id) {
         return vendorRepository.findById(id).orElseThrow(RuntimeException::new);
     }
+
+    @Override
+    public VendorDTO createNewVendor(VendorDTO vendorDTO) {
+
+        Vendor vendor = vendorMapper.vendorDtoToVendor(vendorDTO);
+
+        Vendor savedVendor = vendorRepository.save(vendor);
+
+        VendorDTO returnDto = vendorMapper.vendorToVendorDTO(savedVendor);
+
+        return returnDto;
+    }
+
 }

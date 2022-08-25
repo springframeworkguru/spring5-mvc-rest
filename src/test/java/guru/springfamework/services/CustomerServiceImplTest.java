@@ -1,7 +1,6 @@
 package guru.springfamework.services;
 
 import guru.springfamework.api.v1.mapper.CustomerMapper;
-import guru.springfamework.api.v1.model.CategoryDTO;
 import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.domain.Customer;
 import guru.springfamework.repositories.CustomerRepository;
@@ -14,9 +13,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class CustomerServiceTest {
+public class CustomerServiceImplTest {
 
     public static final long ID = 1L;
     public static final String FIRST_NAME = "John";
@@ -36,7 +36,7 @@ public class CustomerServiceTest {
     @Test
     public void getAllCustomers() {
         //given
-        List<Customer> customers = Arrays.asList(new Customer(), new Customer(),new Customer());
+        List<Customer> customers = Arrays.asList(new Customer(), new Customer(), new Customer());
 
         when(customerRepository.findAll()).thenReturn(customers);
 
@@ -51,29 +51,52 @@ public class CustomerServiceTest {
     public void getCustomerByFirstName() {
         //given
         Customer customer = new Customer();
-        customer.setFirstName(FIRST_NAME);
+        customer.setFirstname(FIRST_NAME);
 
-        when(customerRepository.findByFirstName(FIRST_NAME)).thenReturn(customer);
+        when(customerRepository.findByfirstname(FIRST_NAME)).thenReturn(customer);
 
         //when
         CustomerDTO customerDTO = customerService.getCustomerByFirstName(FIRST_NAME);
 
         //then
-        assertEquals(FIRST_NAME, customerDTO.getFirstName());
+        assertEquals(FIRST_NAME, customerDTO.getFirstname());
     }
 
     @Test
     public void getCustomerByLastName() {
         //given
-        Customer customer= new Customer();
-        customer.setLastName(LAST_NAME);
+        Customer customer = new Customer();
+        customer.setLastname(LAST_NAME);
 
-        when(customerRepository.findByLastName(LAST_NAME)).thenReturn(customer);
+        when(customerRepository.findBylastname(LAST_NAME)).thenReturn(customer);
 
         //when
         CustomerDTO customerDTO = customerService.getCustomerByLastName(LAST_NAME);
 
         //then
-        assertEquals(LAST_NAME, customerDTO.getLastName());
+        assertEquals(LAST_NAME, customerDTO.getLastname());
+    }
+
+    @Test
+    public void createNewCustomer() {
+        //given
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstname("Jim");
+        customerDTO.setLastname("McKillop");
+
+        Customer savedCustomer = new Customer();
+        savedCustomer.setFirstname(customerDTO.getFirstname());
+        savedCustomer.setLastname(customerDTO.getLastname());
+        savedCustomer.setId(1L);
+
+        when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
+
+        //when
+        CustomerDTO savedDto = customerService.createNewCustomer(customerDTO);
+
+        //then
+        assertEquals(customerDTO.getFirstname(), savedDto.getFirstname());
+        assertEquals(customerDTO.getLastname(), savedDto.getLastname());
+        assertEquals("/api/v1/customer/1", savedDto.getCustomerUrl());
     }
 }

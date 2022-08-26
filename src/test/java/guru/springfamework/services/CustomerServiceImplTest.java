@@ -80,14 +80,8 @@ public class CustomerServiceImplTest {
     @Test
     public void createNewCustomer() {
         //given
-        CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setFirstname("Jim");
-        customerDTO.setLastname("McKillop");
-
-        Customer savedCustomer = new Customer();
-        savedCustomer.setFirstname(customerDTO.getFirstname());
-        savedCustomer.setLastname(customerDTO.getLastname());
-        savedCustomer.setId(1L);
+        CustomerDTO customerDTO = customerDTOBuilder();
+        Customer savedCustomer = saveCustomerBuilder(customerDTO);
 
         when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
 
@@ -99,4 +93,38 @@ public class CustomerServiceImplTest {
         assertEquals(customerDTO.getLastname(), savedDto.getLastname());
         assertEquals("/api/v1/customer/1", savedDto.getCustomerUrl());
     }
+
+    @Test
+    public void savedCustomerByDTO() throws Exception{
+        //given
+        CustomerDTO customerDTO = customerDTOBuilder();
+        Customer savedCustomer = saveCustomerBuilder(customerDTO);
+
+        when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
+
+        //when
+        CustomerDTO saveCustomerByDTO = customerService.saveCustomerByDTO(1L, customerDTOBuilder());
+
+        //then
+        assertEquals(customerDTO.getFirstname(), saveCustomerByDTO.getFirstname());
+        assertEquals(customerDTO.getLastname(), saveCustomerByDTO.getLastname());
+        assertEquals("/api/v1/customer/1", saveCustomerByDTO.getCustomerUrl());
+
+    }
+
+    private static CustomerDTO customerDTOBuilder() {
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstname(FIRST_NAME);
+        customerDTO.setLastname(LAST_NAME);
+        return customerDTO;
+    }
+
+    private static Customer saveCustomerBuilder(CustomerDTO customerDTO) {
+        Customer savedCustomer = new Customer();
+        savedCustomer.setFirstname(customerDTO.getFirstname());
+        savedCustomer.setLastname(customerDTO.getLastname());
+        savedCustomer.setId(1L);
+        return savedCustomer;
+    }
+
 }

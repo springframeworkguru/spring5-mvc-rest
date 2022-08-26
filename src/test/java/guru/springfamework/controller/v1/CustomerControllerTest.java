@@ -17,9 +17,10 @@ import java.util.List;
 import static guru.springfamework.controller.v1.AbstractRestControllerTest.asJsonString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,7 +59,7 @@ public class CustomerControllerTest {
 
     @Test
     public void getCustomerByFirstName() throws Exception {
-        CustomerDTO customerDTO = getDto(FIRST_NAME, LAST_NAME);
+        CustomerDTO customerDTO = customerDtoBuilder(FIRST_NAME, LAST_NAME);
 
         when(customerService.getCustomerByFirstName(FIRST_NAME)).thenReturn(customerDTO);
 
@@ -72,7 +73,7 @@ public class CustomerControllerTest {
 
     @Test
     public void getCustomerByLastName() throws Exception {
-        CustomerDTO customerDTO = getDto(FIRST_NAME, LAST_NAME);
+        CustomerDTO customerDTO = customerDtoBuilder(FIRST_NAME, LAST_NAME);
 
         when(customerService.getCustomerByLastName(LAST_NAME)).thenReturn(customerDTO);
 
@@ -85,7 +86,7 @@ public class CustomerControllerTest {
 
     @Test
     public void getCustomerById() throws Exception {
-        CustomerDTO customerDTO = getDto(FIRST_NAME, LAST_NAME);
+        CustomerDTO customerDTO = customerDtoBuilder(FIRST_NAME, LAST_NAME);
 
         when(customerService.getCustomerById(ID)).thenReturn(customerDTO);
 
@@ -98,10 +99,9 @@ public class CustomerControllerTest {
     @Test
     public void createNewCustomer() throws Exception {
         //given
-        CustomerDTO customerDTO = getDto(FIRST_NAME, LAST_NAME);
+        CustomerDTO customerDTO = customerDtoBuilder(FIRST_NAME, LAST_NAME);
 
-        CustomerDTO returnDTO = getDto(customerDTO.getFirstname(), customerDTO.getLastname());
-        returnDTO.setCustomerUrl("/api/v1/customer/1");
+        CustomerDTO returnDTO = returnCustomerDTOBuilder(customerDTO);
 
         when(customerService.createNewCustomer(customerDTO)).thenReturn(returnDTO);
 
@@ -114,11 +114,36 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.customerUrl", equalTo("/api/v1/customer/1")));
     }
 
-    private static CustomerDTO getDto(String firstName, String lastName) {
+    @Test
+    public void testUpdateCustomer() throws Exception {
+        //given
+        CustomerDTO customerDTO = customerDtoBuilder(FIRST_NAME, LAST_NAME);
+        CustomerDTO returnDTO = returnCustomerDTOBuilder(customerDTO);
+
+        when(customerService.saveCustomerByDTO(anyLong(), any(CustomerDTO.class))).thenReturn(returnDTO);
+
+        //then
+        mockMvc.perform(put("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customerDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstname", equalTo(FIRST_NAME)))
+                .andExpect(jsonPath("$.lastname", equalTo(LAST_NAME)))
+                .andExpect(jsonPath("$.customerUrl", equalTo("/api/v1/customers/1")));
+
+    }
+
+    private static CustomerDTO customerDtoBuilder(String firstName, String lastName) {
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setFirstname(firstName);
         customerDTO.setLastname(lastName);
         return customerDTO;
+    }
+
+    private static CustomerDTO returnCustomerDTOBuilder(CustomerDTO customerDTO) {
+        CustomerDTO returnDTO = customerDtoBuilder(customerDTO.getFirstname(), customerDTO.getLastname());
+        returnDTO.setCustomerUrl("/api/v1/customers/1");
+        return returnDTO;
     }
 
 }

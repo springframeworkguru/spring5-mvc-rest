@@ -6,12 +6,11 @@ import guru.springfamework.domain.Vendor;
 import guru.springfamework.services.VendorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping(VendorController.BASE_URL)
 public class VendorController {
 
@@ -23,29 +22,33 @@ public class VendorController {
     }
 
     @GetMapping()
-    public ResponseEntity<VendorListDTO> getAllVendors(){
-        return new ResponseEntity<VendorListDTO>(
-                new VendorListDTO(vendorService.getAllVendors()), HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public VendorListDTO getAllVendors(){
+        return new VendorListDTO(vendorService.getAllVendors());
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<Optional<VendorDTO>> findByName(@PathVariable String name){
-        return new ResponseEntity<>(vendorService.findByName(name), HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public Optional<VendorDTO> findByName(@PathVariable String name){
+        return vendorService.findByName(name);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Vendor> findById(@PathVariable Long id){
-        return new ResponseEntity<>(vendorService.getVendorById(id),HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public Vendor findById(@PathVariable Long id){
+        return vendorService.getVendorById(id);
     }
 
     @PostMapping()
-    public ResponseEntity<VendorDTO> createNewVendor(@RequestBody VendorDTO vendorDTO ){
-        return new ResponseEntity<>(vendorService.createNewVendor(vendorDTO), HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public VendorDTO createNewVendor(@RequestBody VendorDTO vendorDTO ){
+        return vendorService.createNewVendor(vendorDTO);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VendorDTO> updateVendor(@PathVariable Long id, @RequestBody VendorDTO vendorDTO){
-        return new ResponseEntity<VendorDTO>(vendorService.saveVendorByDTO(id, vendorDTO), HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public VendorDTO updateVendor(@PathVariable Long id, @RequestBody VendorDTO vendorDTO){
+        return vendorService.saveVendorByDTO(id, vendorDTO);
     }
 
 }

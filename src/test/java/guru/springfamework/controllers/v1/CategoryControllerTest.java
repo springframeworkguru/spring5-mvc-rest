@@ -48,7 +48,7 @@ public class CategoryControllerTest {
     }
 
     @Test
-    public void testListCategories() throws Exception {
+    public void testGetAllCategories() throws Exception {
         CategoryDTO categoryDTO1 = new CategoryDTO();
         categoryDTO1.setId(ID);
         categoryDTO1.setName(NAME1);

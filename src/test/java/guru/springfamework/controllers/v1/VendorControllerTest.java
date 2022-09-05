@@ -105,15 +105,6 @@ public class VendorControllerTest {
                 .andExpect(jsonPath("vendorUrl", equalTo(VendorController.BASE_URL + "/1")));
     }
 
-    /*@Test
-    public void testGetByLastNameNotFound() throws Exception {
-        when(vendorService.(anyString())).thenThrow(ResourceNotFoundException.class);
-
-        mockMvc.perform(get(customerController.BASE_URL + "/Error")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }*/
-
     private static VendorDTO vendorDTOBuilder() {
         VendorDTO vendorDTO = new VendorDTO();
         vendorDTO.setName(NAME);

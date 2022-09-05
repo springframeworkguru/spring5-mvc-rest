@@ -2,11 +2,13 @@ package guru.springfamework.services;
 
 import guru.springfamework.api.v1.mapper.VendorMapper;
 import guru.springfamework.api.v1.model.VendorDTO;
+import guru.springfamework.controllers.v1.VendorController;
 import guru.springfamework.domain.Vendor;
 import guru.springfamework.repositories.VendorRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,21 +29,20 @@ public class VendorServiceImpl implements VendorService {
                 .stream()
                 .map(vendor -> {
                     VendorDTO vendorDTO = vendorMapper.vendorToVendorDTO(vendor);
-                    vendorDTO.setVendorUrl("/api/v1/vendors/" + vendor.getId());
+                    vendorDTO.setVendorUrl(VendorController.BASE_URL + "/" + vendor.getId());
                     return vendorDTO;
                 })
                 .collect(Collectors.toList());
     }
 
     @Override
-    public VendorDTO findByName(String name) {
-        //return vendorMapper.vendorToVendorDTO(vendorRepository.findByName(name));
-        return vendorRepository.findByName(name);
+    public Optional<VendorDTO> findByName(String name) {
+        return Optional.ofNullable(vendorRepository.findByName(name).orElseThrow(ResourceNotFoundException::new));
     }
 
     @Override
     public Vendor getVendorById(Long id) {
-        return vendorRepository.findById(id).orElseThrow(RuntimeException::new);
+        return vendorRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
@@ -54,6 +55,22 @@ public class VendorServiceImpl implements VendorService {
         VendorDTO returnDto = vendorMapper.vendorToVendorDTO(savedVendor);
 
         return returnDto;
+    }
+
+    @Override
+    public VendorDTO saveVendorByDTO(Long id, VendorDTO vendorDTO) {
+        Vendor vendor = vendorMapper.vendorDtoToVendor(vendorDTO);
+        vendor.setId(id);
+
+        return saveAndReturnDTO(vendor);
+    }
+
+    private VendorDTO saveAndReturnDTO(Vendor vendor){
+        Vendor savedVendor = vendorRepository.save(vendor);
+        VendorDTO returnedDTO = vendorMapper.vendorToVendorDTO(savedVendor);
+        returnedDTO.setVendorUrl(VendorController.BASE_URL + "/" + savedVendor.getId());
+
+        return returnedDTO;
     }
 
 }

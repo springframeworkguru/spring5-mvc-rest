@@ -1,7 +1,7 @@
-package guru.springfamework.controller.v1;
+package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.VendorDTO;
-import guru.springfamework.services.CustomerService;
+import guru.springfamework.services.ResourceNotFoundException;
 import guru.springfamework.services.VendorService;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,17 +10,18 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static guru.springfamework.controller.v1.AbstractRestControllerTest.asJsonString;
+import static guru.springfamework.controllers.v1.AbstractRestControllerTest.asJsonString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class VendorControllerTest {
 
+    public static final String NAME = "tasty";
     MockMvc mockMvc;
 
     @Mock
@@ -50,7 +52,7 @@ public class VendorControllerTest {
         when(vendorService.getAllVendors()).thenReturn(vendorDTOList);
 
         //then
-        mockMvc.perform(get("/api/v1/vendors/")
+        mockMvc.perform(get(VendorController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.vendors", hasSize(3)));
@@ -59,60 +61,63 @@ public class VendorControllerTest {
     @Test
     public void findByName() throws Exception {
         //given
-        VendorDTO vendorDTO = getVendorDTO();
+        VendorDTO vendorDTO = vendorDTOBuilder();
 
-        when(vendorService.findByName("tasty")).thenReturn(vendorDTO);
+        when(vendorService.findByName(NAME)).thenReturn(Optional.of(vendorDTO));
 
         //then
-        mockMvc.perform(get("/api/v1/vendors/name/tasty")
+        mockMvc.perform(get(VendorController.BASE_URL + "/name/tasty")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(vendorDTO.getName())));
     }
 
-
-
     @Test
     public void createNewVendor() throws Exception {
         //given
-        VendorDTO vendorDTO = getVendorDTO();
+        VendorDTO vendorDTO = vendorDTOBuilder();
 
         VendorDTO returnVendorDTO = vendorDTO;
 
         when(vendorService.createNewVendor(vendorDTO)).thenReturn(returnVendorDTO);
 
-        mockMvc.perform(post("/api/v1/vendors/")
+        mockMvc.perform(post(VendorController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(vendorDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name", equalTo("tasty")));
+                .andExpect(jsonPath("$.name", equalTo(NAME)));
     }
 
-    /*
-    * @Test
-    public void createNewCustomer() throws Exception {
+    @Test
+    public void testUpdateVendor() throws Exception {
         //given
-        CustomerDTO customerDTO = getDto(FIRST_NAME, LAST_NAME);
+        VendorDTO vendorDTO = vendorDTOBuilder();
+        VendorDTO returnVendorDTO = vendorDTO;
 
-        CustomerDTO returnDTO = getDto(customerDTO.getFirstname(), customerDTO.getLastname());
-        returnDTO.setCustomerUrl("/api/v1/customer/1");
+        when(vendorService.saveVendorByDTO(anyLong(), any(VendorDTO.class))).thenReturn(returnVendorDTO);
 
-        when(customerService.createNewCustomer(customerDTO)).thenReturn(returnDTO);
-
-        mockMvc.perform(post("/api/v1/customers/")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(asJsonString(customerDTO)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.firstname", equalTo(FIRST_NAME)))
-                .andExpect(jsonPath("$.lastname", equalTo(LAST_NAME)))
-                .andExpect(jsonPath("$.customerUrl", equalTo("/api/v1/customer/1")));
+        //then
+        mockMvc.perform(put(VendorController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendorDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(NAME)))
+                .andExpect(jsonPath("vendorUrl", equalTo(VendorController.BASE_URL + "/1")));
     }
-    * */
 
-    private static VendorDTO getVendorDTO() {
+    /*@Test
+    public void testGetByLastNameNotFound() throws Exception {
+        when(vendorService.(anyString())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(get(customerController.BASE_URL + "/Error")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }*/
+
+    private static VendorDTO vendorDTOBuilder() {
         VendorDTO vendorDTO = new VendorDTO();
-        vendorDTO.setName("tasty");
-        vendorDTO.setVendorUrl("/api/v1/vendors");
+        vendorDTO.setName(NAME);
+        vendorDTO.setVendorUrl(VendorController.BASE_URL + "/1");
         return vendorDTO;
     }
 }

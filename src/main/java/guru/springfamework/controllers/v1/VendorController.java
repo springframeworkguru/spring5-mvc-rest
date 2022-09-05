@@ -1,4 +1,4 @@
-package guru.springfamework.controller.v1;
+package guru.springfamework.controllers.v1;
 
 import guru.springfamework.api.v1.model.VendorDTO;
 import guru.springfamework.api.v1.model.VendorListDTO;
@@ -9,10 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Controller
-@RequestMapping("/api/v1/vendors")
+@RequestMapping(VendorController.BASE_URL)
 public class VendorController {
 
+    public static final String BASE_URL = "/api/v1/vendors";
     private final VendorService vendorService;
 
     public VendorController(VendorService vendorService) {
@@ -26,7 +29,7 @@ public class VendorController {
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<VendorDTO> findByName(@PathVariable String name){
+    public ResponseEntity<Optional<VendorDTO>> findByName(@PathVariable String name){
         return new ResponseEntity<>(vendorService.findByName(name), HttpStatus.OK);
     }
 
@@ -39,4 +42,10 @@ public class VendorController {
     public ResponseEntity<VendorDTO> createNewVendor(@RequestBody VendorDTO vendorDTO ){
         return new ResponseEntity<>(vendorService.createNewVendor(vendorDTO), HttpStatus.CREATED);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<VendorDTO> updateVendor(@PathVariable Long id, @RequestBody VendorDTO vendorDTO){
+        return new ResponseEntity<VendorDTO>(vendorService.saveVendorByDTO(id, vendorDTO), HttpStatus.OK);
+    }
+
 }

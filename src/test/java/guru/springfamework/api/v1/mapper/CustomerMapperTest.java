@@ -18,16 +18,16 @@ public class CustomerMapperTest {
 
     CustomerDTO customerDTO;
 
-    /*@Test
+    @Test
     public void customerToCustomerDTO() {
 
         Customer customer = new Customer();
-        customer.setFirstName(FIRSTNAME);
-        customer.setLastName(LASTNAME);
+        customer.setFirstname(FIRSTNAME);
+        customer.setLastname(LASTNAME);
 
         customerDTO = customerMapper.customerToCustomerDTO(customer);
 
-        assertEquals(FIRSTNAME, customerDTO.getFirstName());
-        assertEquals(LASTNAME, customerDTO.getLastName());
-    }*/
+        assertEquals(FIRSTNAME, customerDTO.getFirstname());
+        assertEquals(LASTNAME, customerDTO.getLastname());
+    }
 }

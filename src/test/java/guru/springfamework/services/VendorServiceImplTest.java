@@ -14,9 +14,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.*;
 
 public class VendorServiceImplTest {
 
@@ -118,10 +120,39 @@ public class VendorServiceImplTest {
         assertEquals(VendorController.BASE_URL +"/1", savedVendorByDTO.getVendorUrl());
     }
 
+    @Test
+    public void deleteVendor(){
+        Long id = 1L;
+        vendorRepository.deleteById(id);
+
+        verify(vendorRepository, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    public void testPatchVendor(){
+        //given
+        VendorDTO vendorDTO = vendorDTOBuilder();
+        Vendor vendor = vendorBuilder(vendorDTO);
+
+        when(vendorRepository.findById(anyLong())).thenReturn(Optional.of(vendor));
+        when(vendorRepository.save(any(Vendor.class))).thenReturn(vendor);
+
+        //when
+        VendorDTO patchVendor = vendorService.patchVendor(vendor.getId(), vendorDTO);
+        patchVendor.setName("McBride's");
+
+        //then
+        assertNotEquals(vendorDTO.getName(), patchVendor.getName());
+        then(vendorRepository).should().save(any(Vendor.class));
+        then(vendorRepository).should(times(1)).findById(anyLong());
+        assertThat(patchVendor.getVendorUrl(), containsString("1"));
+
+    }
 
     private static VendorDTO vendorDTOBuilder() {
         VendorDTO vendorDTO = new VendorDTO();
         vendorDTO.setName(NAME);
+        vendorDTO.setVendorUrl("1");
         return vendorDTO;
     }
 

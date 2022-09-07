@@ -6,10 +6,15 @@ import guru.springfamework.services.CustomerService;
 import guru.springfamework.services.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -26,6 +31,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@RunWith(SpringRunner.class)
+@WebMvcTest(controllers = {CustomerController.class})
 public class CustomerControllerTest {
 
     public static final String FIRST_NAME = "Paidi";
@@ -33,17 +40,15 @@ public class CustomerControllerTest {
     public static final Long ID = 1L;
     public static final String CUSTOMER_URL_BY_ID = "/api/v1/customers/1";
 
+    @Autowired
     MockMvc mockMvc;
-    @Mock
+    @MockBean
     CustomerService customerService;
-    @InjectMocks
-    CustomerController customerController;
 
+    CustomerDTO customerDTO;
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(customerController)
-                .setControllerAdvice(new RestResponseEntityExceptionHandler()).build();
+        customerDTO = customerDtoBuilder(FIRST_NAME, LAST_NAME);
     }
 
     @Test
@@ -62,8 +67,6 @@ public class CustomerControllerTest {
 
     @Test
     public void getCustomerByFirstName() throws Exception {
-        CustomerDTO customerDTO = customerDtoBuilder(FIRST_NAME, LAST_NAME);
-
         when(customerService.getCustomerByFirstName(FIRST_NAME)).thenReturn(customerDTO);
 
         //then
@@ -76,8 +79,6 @@ public class CustomerControllerTest {
 
     @Test
     public void getCustomerByLastName() throws Exception {
-        CustomerDTO customerDTO = customerDtoBuilder(FIRST_NAME, LAST_NAME);
-
         when(customerService.getCustomerByLastName(LAST_NAME)).thenReturn(customerDTO);
 
         //then
@@ -89,8 +90,6 @@ public class CustomerControllerTest {
 
     @Test
     public void getCustomerById() throws Exception {
-        CustomerDTO customerDTO = customerDtoBuilder(FIRST_NAME, LAST_NAME);
-
         when(customerService.getCustomerById(ID)).thenReturn(customerDTO);
 
         //then
@@ -102,8 +101,6 @@ public class CustomerControllerTest {
     @Test
     public void createNewCustomer() throws Exception {
         //given
-        CustomerDTO customerDTO = customerDtoBuilder(FIRST_NAME, LAST_NAME);
-
         CustomerDTO returnDTO = returnCustomerDTOBuilder(customerDTO);
 
         when(customerService.createNewCustomer(customerDTO)).thenReturn(returnDTO);
@@ -114,14 +111,12 @@ public class CustomerControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstname", equalTo(FIRST_NAME)))
                 .andExpect(jsonPath("$.lastname", equalTo(LAST_NAME)))
-                .andExpect(jsonPath("$.customerUrl", equalTo(CUSTOMER_URL_BY_ID)));
+                .andExpect(jsonPath("$.customer_url", equalTo(CUSTOMER_URL_BY_ID)));
     }
 
     @Test
     public void testUpdateCustomer() throws Exception {
         //given
-        CustomerDTO customerDTO = customerDtoBuilder(FIRST_NAME, LAST_NAME);
-
         when(customerService.saveCustomerByDTO(anyLong(), any(CustomerDTO.class))).thenReturn(customerDTO);
 
         //then
@@ -131,31 +126,12 @@ public class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstname", equalTo(FIRST_NAME)))
                 .andExpect(jsonPath("$.lastname", equalTo(LAST_NAME)))
-                .andExpect(jsonPath("$.customerUrl", equalTo(CUSTOMER_URL_BY_ID)));
+                .andExpect(jsonPath("$.customer_url", equalTo(CUSTOMER_URL_BY_ID)));
 
-    }
-
-    @Test
-    public void testPatchCustomer() throws Exception {
-
-        //given
-        CustomerDTO customerDTO = customerDtoBuilder(FIRST_NAME, LAST_NAME);
-        CustomerDTO returnCustomerDTO = returnCustomerDTOBuilder(customerDTO);
-
-        when(customerService.patchCustomer(anyLong(),any(CustomerDTO.class))).thenReturn(returnCustomerDTO);
-
-        mockMvc.perform(patch(CUSTOMER_URL_BY_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(customerDTO)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstname", equalTo(FIRST_NAME)))
-                .andExpect(jsonPath("$.lastname", equalTo(LAST_NAME)))
-                .andExpect(jsonPath("$.customerUrl", equalTo(CUSTOMER_URL_BY_ID)));
     }
 
     @Test
     public void testDeleteCustomerById() throws Exception {
-
         mockMvc.perform(delete(CUSTOMER_URL_BY_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -185,9 +161,27 @@ public class CustomerControllerTest {
     public void testGetByFirstNameNotFound() throws Exception {
         when(customerService.getCustomerByFirstName(anyString())).thenThrow(ResourceNotFoundException.class);
 
-        mockMvc.perform(get(customerController.BASE_URL + "/firstname/Error")
+        mockMvc.perform(get(CustomerController.BASE_URL + "/firstname/Error")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testPatchCustomer() throws Exception {
+
+        //given
+        CustomerDTO customerDTO = customerDtoBuilder(FIRST_NAME, LAST_NAME);
+        CustomerDTO returnCustomerDTO = returnCustomerDTOBuilder(customerDTO);
+
+        when(customerService.patchCustomer(anyLong(),any(CustomerDTO.class))).thenReturn(returnCustomerDTO);
+
+        mockMvc.perform(patch(CUSTOMER_URL_BY_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(customerDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstname", equalTo(FIRST_NAME)))
+                .andExpect(jsonPath("$.lastname", equalTo(LAST_NAME)))
+                .andExpect(jsonPath("$.customer_url", equalTo(CUSTOMER_URL_BY_ID)));
     }
 
     private static CustomerDTO customerDtoBuilder(String firstName, String lastName) {

@@ -5,7 +5,6 @@ import guru.springfamework.api.v1.model.VendorListDTO;
 import guru.springfamework.domain.Vendor;
 import guru.springfamework.services.VendorService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -49,6 +48,18 @@ public class VendorController {
     @ResponseStatus(HttpStatus.OK)
     public VendorDTO updateVendor(@PathVariable Long id, @RequestBody VendorDTO vendorDTO){
         return vendorService.saveVendorByDTO(id, vendorDTO);
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public VendorDTO patchVendor(@PathVariable Long id, @RequestBody VendorDTO vendorDTO){
+        return vendorService.patchVendor(id, vendorDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteVendor(@PathVariable Long id) {
+        vendorService.deleteVendor(id);
     }
 
 }

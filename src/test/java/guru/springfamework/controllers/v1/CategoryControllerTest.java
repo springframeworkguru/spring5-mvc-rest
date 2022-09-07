@@ -6,10 +6,15 @@ import guru.springfamework.services.CategoryService;
 import guru.springfamework.services.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -25,6 +30,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@RunWith(SpringRunner.class)
+@WebMvcTest(controllers = {CategoryController.class})
 public class CategoryControllerTest {
 
     public static final String NAME1 = "Jim";
@@ -32,31 +39,23 @@ public class CategoryControllerTest {
     public static final String NAME2 = "Bob";
     public static final long ID2 = 2L;
 
+    @Autowired
     MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     CategoryService categoryService;
 
-    @InjectMocks
-    CategoryController categoryController;
+    CategoryDTO categoryDTO1;
+    CategoryDTO categoryDTO2;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(categoryController)
-                .setControllerAdvice(new RestResponseEntityExceptionHandler()).build();
+        categoryDTO1 = buildCategoryDTO(ID, NAME1);
+        categoryDTO2 = buildCategoryDTO(ID2, NAME2);
     }
 
     @Test
     public void testGetAllCategories() throws Exception {
-        CategoryDTO categoryDTO1 = new CategoryDTO();
-        categoryDTO1.setId(ID);
-        categoryDTO1.setName(NAME1);
-
-        CategoryDTO categoryDTO2 = new CategoryDTO();
-        categoryDTO2.setId(ID2);
-        categoryDTO2.setName(NAME2);
-
         List<CategoryDTO> categories = Arrays.asList(categoryDTO1,categoryDTO2);
 
         when(categoryService.getAllCategories()).thenReturn(categories);
@@ -69,16 +68,19 @@ public class CategoryControllerTest {
 
     @Test
     public void testGetCategoryByName() throws Exception {
-        CategoryDTO categoryDTO1 = new CategoryDTO();
-        categoryDTO1.setId(ID);
-        categoryDTO1.setName(NAME1);
-
         when(categoryService.getCategoryByName(NAME1)).thenReturn(categoryDTO1);
 
         mockMvc.perform(get(CategoryController.BASE_URL+ "/" +NAME1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(NAME1)));
+    }
+
+    private static CategoryDTO buildCategoryDTO(long id, String name1) {
+        CategoryDTO categoryDTO1 = new CategoryDTO();
+        categoryDTO1.setId(id);
+        categoryDTO1.setName(name1);
+        return categoryDTO1;
     }
 
     @Test

@@ -13,8 +13,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 public class CustomerServiceImplTest {
@@ -110,6 +112,26 @@ public class CustomerServiceImplTest {
         assertEquals(customerDTO.getFirstname(), saveCustomerByDTO.getFirstname());
         assertEquals(customerDTO.getLastname(), saveCustomerByDTO.getLastname());
         assertEquals("/api/v1/customer/1", saveCustomerByDTO.getCustomerUrl());
+    }
+
+    @Test
+    public void testPatchCustomer(){
+        //given
+        CustomerDTO customerDTO = customerDTOBuilder();
+        Customer savedCustomer = saveCustomerBuilder(customerDTO);
+
+        when(customerRepository.findById(anyLong())).thenReturn(Optional.of(savedCustomer));
+        when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
+
+        //when
+        CustomerDTO patchCustomer = customerService.patchCustomer(1L, customerDTO);
+        patchCustomer.setFirstname("changedName");
+
+        //then
+        assertNotEquals(customerDTO.getFirstname(),patchCustomer.getFirstname());
+        then(customerRepository).should().save(any(Customer.class));
+        then(customerRepository).should(times(1)).findById(anyLong());
+        assertThat(patchCustomer.getCustomerUrl(), containsString("1"));
 
     }
 
